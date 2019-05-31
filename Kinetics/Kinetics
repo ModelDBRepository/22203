@@ -1,0 +1,54 @@
+// EXPERIMENT-file, exp.par is loaded first
+
+
+
+// VARIABLE CHECK: //
+
+  print " utilized Timesteps: "
+  for TStepCount=0, NumTSteps print TStepCount, ":  " , MeasTimes[TStepCount], "ms"
+
+  print " utilized VoltageSteps: "
+  for VStepCount=0, NumVSteps-1 {
+    print VStepCount, ": " , vclmp[VStepCount]}
+
+
+  print "+++++ Experiment Name: ", ExperimentName, "++++++++"
+  print " "
+  print " Passive Parameters: (if homogenous)"
+  print "Rm: ",rm
+  print "Ra: ",ra
+  print "c_m: ",c_m
+  print "Ek: ",Ek
+  print "v_init:  ",v_init
+  print "gkslow:", gKslow
+  print "gkfast:", gKfast
+
+
+
+// VOLTAGE CLAMP PARAMETERS  //
+// all explicitly set by Experiment.par
+
+stimSec.sec vC  = new SEClamp(stimPos)    // perfect voltage clamp at stimSec
+
+vC.dur1 = MeasTStart + MaxMeasTime*2             // factor 2 is for safety reasons
+    if (DebugOn) print "vC.dur1:",vC.dur1
+                                             // Amplitudes will be vector-played
+vC.rs   = VClampSeriesR
+
+dt = Experimental_dt
+
+
+
+
+    xopen("Routines.kin")   // Loading Clamp-Routines
+
+    xopen("InOut.kin")      // Loading Input/Output-Routines
+
+
+// Main Program:
+
+access somaA 
+
+MeasureCurrents()
+
+WriteClampCurrents(CurrentFileName)

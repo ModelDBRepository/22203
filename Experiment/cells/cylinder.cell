@@ -1,0 +1,14 @@
+
+    print "creating cylindric cell"
+
+create somaA
+
+somaA {
+  diam = 3
+  L = 2000
+  nseg = 50
+  for(x) print "Area: ",area(x)
+  print "nseg: ",nseg," diam: ",diam,"L: ",L
+}
+
+

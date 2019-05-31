@@ -1,0 +1,68 @@
+    print "Loading Input/Output Routines for Experiment ......."
+
+// Input/Output for Experiment:
+
+proc WriteClampCurrents() { local TStepCount, VStepCount
+
+  sprint(iClampFileName,"ClampCurrents/%s.iCl",ExperimentName)
+  print " Writing ClampCurrents to ", iClampFileName //debug
+  wopen(iClampFileName)  //m WriteOpen /ClampCurrents/ExperimentName.iCl
+
+  fprint(" ExperimentName: _%s_",ExperimentName)
+
+  fprint(" Number of recorded voltage steps:\t\t\t\t%g\n",NumVSteps)
+  fprint("  vclmp \t  iclmp(time) \n \t")
+  for TStepCount=0,NumTSteps fprint("%g\t",MeasTimes[TStepCount])
+  fprint("\n")
+
+  for VStepCount=0,NumVSteps-1 { // writes: V  I(V,t1)  I(V,t2) ...
+    fprint("%g\t",vclmp[VStepCount])
+    for TStepCount=0,NumTSteps {
+      fprint("%g\t",iclmp[VStepCount][TStepCount])
+    }
+  fprint("\n")
+  } //m next v
+  wopen()
+
+  sprint(iClampFileName,"ClampCurrents/%s.vCl",ExperimentName)
+  print " Writing Clamp voltages to ", iClampFileName //debug
+  wopen(iClampFileName)  //m WriteOpen /ClampCurrents/ExperimentName.iCl
+
+  fprint(" ExperimentName: _%s_",ExperimentName)
+
+  fprint(" Number of recorded voltage steps:\t\t\t\t%g\n",NumVSteps)
+  fprint("  vclmp \t  iclmp(time) \n \t")
+  for TStepCount=0,NumTSteps fprint("%g\t",MeasTimes[TStepCount])
+  fprint("\n")
+
+  for VStepCount=0,NumVSteps-1 { // writes: V  I(V,t1)  I(V,t2) ...
+    fprint("%g\t",vclmp[VStepCount])
+    for TStepCount=0,NumTSteps {
+      fprint("%g\t",VClmp[VStepCount][TStepCount])
+    }
+  fprint("\n")
+  } //m next v
+  wopen()
+
+  sprint(iClampFileName,"ClampCurrents/%s.gCl",ExperimentName)
+  print " Writing Conductance estimate from ClampCurrents to ", iClampFileName //debug
+  wopen(iClampFileName)  //m WriteOpen /ClampCurrents/ExperimentName.iCl
+
+  fprint("\t")
+  for VStepCount=0,NumVSteps-1 { 
+    fprint("%g\t",vclmp[VStepCount])
+  } 
+  fprint("\n")
+  for TStepCount=0,NumTSteps {
+    fprint("%g\t",MeasTimes[TStepCount])
+    for VStepCount=0,NumVSteps-1 { 
+      if (vclmp[VStepCount]==Ek) fprint("0/t") else {
+        fprint("%g\t",iclmp[VStepCount][TStepCount]/(vclmp[VStepCount]-Ek))
+      }
+    }
+    fprint("\n")
+  }
+
+  wopen()
+
+}

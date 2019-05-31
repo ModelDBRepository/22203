@@ -1,0 +1,780 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1255">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./ReadMe_files/filelist.xml">
+<title>ReadMe</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Alon Korngreen</o:Author>
+  <o:LastAuthor>Alon Korngreen</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>20</o:TotalTime>
+  <o:Created>2002-01-20T14:32:00Z</o:Created>
+  <o:LastSaved>2002-01-20T14:32:00Z</o:LastSaved>
+  <o:Pages>3</o:Pages>
+  <o:Words>911</o:Words>
+  <o:Characters>5196</o:Characters>
+  <o:Company>utbi</o:Company>
+  <o:Lines>43</o:Lines>
+  <o:Paragraphs>10</o:Paragraphs>
+  <o:CharactersWithSpaces>6381</o:CharactersWithSpaces>
+  <o:Version>9.3821</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:DrawingGridHorizontalSpacing>3 pt</w:DrawingGridHorizontalSpacing>
+  <w:DrawingGridVerticalSpacing>8.15 pt</w:DrawingGridVerticalSpacing>
+  <w:DisplayHorizontalDrawingGridEvery>0</w:DisplayHorizontalDrawingGridEvery>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:right;
+	mso-pagination:widow-orphan;
+	direction:rtl;
+	unicode-bidi:embed;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:21.0cm 842.0pt;
+	margin:36.0pt 36.0pt 34.0pt 36.0pt;
+	mso-header-margin:36.85pt;
+	mso-footer-margin:36.85pt;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+</head>
+
+<body lang=EN-US style='tab-interval:36.0pt'>
+
+<div class=Section1>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><b><span
+style='font-family:Arial;mso-fareast-language:EN-US'>Instructions for the demo
+version<o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'>The directory tree
+contains the code we developed for correcting space-clamp distortions of
+voltage-clamp recordings. The code is distributed in several sub directories.
+The example given here is a voltage clamp experiment of a 2 mm cable with an
+ideal two electrode voltage clamp inserted in the middle of the cable. In the
+simulated experiment (sub directory <b>Experimen</b>t) a homogeneous density of
+the kfast potassium channel (Korngreen and Sakmann 2000) is inserted into the
+cable and a series of steps from —80 to +70 mV is given. Then the active
+conductance is removed and the voltage clamp protocol is repeated to calculate
+the passive response of the cable. This passive response is subtracted from the
+first set of currents thus performing the process of leak subtraction. The
+leak-subtracted currents are then copied to the directory where they will be
+corrected for space-clamp (the <b>Fit </b>directory). In addition to this, the
+simulation is also run in a one-compartment model to obtain the correct
+kinetics of the current (directory <b>Kinetic</b>s).<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'>The demo version will run
+only on computers with NEURON 5.0.0 or later.<span style="mso-spacerun:
+yes">&nbsp; </span>There are two batch files provided that facilitates the
+process of model compilation and execution.<span style="mso-spacerun:
+yes">&nbsp; </span>One is for Uinx and the other for Windows (in a DOS
+consol).<span style="mso-spacerun: yes">&nbsp; </span>Due to the limitation of
+the Microsoft operating system you have to compile manually the nrnmech.dll in
+the following directories before running the batch file.<span
+style="mso-spacerun: yes">&nbsp; </span>This is not necessary under Unix.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><b><span
+style='font-family:Arial;mso-fareast-language:EN-US'>Correction.Demo\Kinetics\mod<o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><b><span
+style='font-family:Arial;mso-fareast-language:EN-US'>Correction.Demo\Experiment\mod<o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><b><span
+style='font-family:Arial;mso-fareast-language:EN-US'>Correction.Demo\Fit\mod<o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'>NOTE: During the execution
+of the PC.bat batch file you will have to intervene and after each step close
+NEURON. Unlike in Unix, NEURON stays on after it finished. This stops the
+execution of the batch file. The execution will resume only after you close
+NEURON. Generally, the Unix version is more stable.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'>Regardless of the batch
+file you select, after some messages and calculations you will get a panel with
+the following options:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'>1. Load the leak-subtracted
+currents recorded from the cylinder and display them.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'>2. Load the conductance
+density of the currents recorded from a spherical cell.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'>3. Run the correction
+algorithm. This might take a while. On the Silicon Graphics<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'>Unix Origin 2000 this took
+20 minutes, sun Sparc10 2.5 hours, 400 MHz Celeron<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'>PC with windows 98 2
+hours.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'>4. This will plot the
+results of the correction.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'>In addition to the panel
+you will see a graph that displays the true kinetics. The values of the time,
+voltage and the conductance will be updated for every step in the calculation.
+The value of the conductance will also be displayed on-line on top of the true
+conductance in a graph that should be opened automatically. For display
+purposes the conductance shown is the conductance after correction for the
+initial guess for the activation time constants. If you will press the Verbose
+button you will also get a text output to the consol.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><b><span
+style='font-family:Arial;mso-fareast-language:EN-US'>Description of files:<o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><u><span
+style='font-family:Arial;mso-fareast-language:EN-US'>Directory <b>Kinetic</b>s:<o:p></o:p></span></u></p>
+
+<table border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;
+ border:none;mso-border-alt:solid windowtext .5pt;mso-padding-alt:0cm 5.4pt 0cm 5.4pt'>
+ <tr>
+  <td width=189 valign=top style='width:4.0cm;border:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>cylinder.kin.par <o:p></o:p></span></p>
+  </td>
+  <td width=670 valign=top style='width:402.0pt;border:solid windowtext .5pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>This HOC file parameters
+  that control the simulation. Edit this file to change the kinetics in a
+  spherical morphology. They are later used for display purposes<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=189 valign=top style='width:4.0cm;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Kinetics<span
+  style="mso-spacerun: yes">&nbsp; </span><o:p></o:p></span></p>
+  </td>
+  <td width=670 valign=top style='width:402.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>This file actually
+  simulates the conductances.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=189 valign=top style='width:4.0cm;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>InOut.kin <o:p></o:p></span></p>
+  </td>
+  <td width=670 valign=top style='width:402.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Input output routines.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=189 valign=top style='width:4.0cm;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Routines.kin <o:p></o:p></span></p>
+  </td>
+  <td width=670 valign=top style='width:402.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>General routines used for
+  generation of the conductances.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=189 valign=top style='width:4.0cm;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Cells <o:p></o:p></span></p>
+  </td>
+  <td width=670 valign=top style='width:402.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>This folder contains
+  only a one compartment model of a cell.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=189 valign=top style='width:4.0cm;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>mod <o:p></o:p></span></p>
+  </td>
+  <td width=670 valign=top style='width:402.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>A directory containing
+  the MOD files of the additional mechanisms that were tested.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=189 valign=top style='width:4.0cm;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Output <o:p></o:p></span></p>
+  </td>
+  <td width=670 valign=top style='width:402.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>The output is written to
+  this folder<o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><u><span
+style='font-family:Arial;mso-fareast-language:EN-US'>Directory <b>Experiment<o:p></o:p></b></span></u></p>
+
+<table border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;
+ border:none;mso-border-alt:solid windowtext .5pt;mso-padding-alt:0cm 5.4pt 0cm 5.4pt'>
+ <tr>
+  <td width=189 valign=top style='width:4.0cm;border:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>cylinder.exp.par <o:p></o:p></span></p>
+  </td>
+  <td width=670 valign=top style='width:402.0pt;border:solid windowtext .5pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>This HOC file contains
+  the parameters that control the simulation. Edit this file to change the
+  simulation.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=189 valign=top style='width:4.0cm;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Experiment<o:p></o:p></span></p>
+  </td>
+  <td width=670 valign=top style='width:402.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>This file actually does the simulation<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=189 valign=top style='width:4.0cm;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>InOut.exp<o:p></o:p></span></p>
+  </td>
+  <td width=670 valign=top style='width:402.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>Input output routines for the
+  simulated experiment<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=189 valign=top style='width:4.0cm;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Routines.exp<o:p></o:p></span></p>
+  </td>
+  <td width=670 valign=top style='width:402.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>General routines for the simulated
+  experiment.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=189 valign=top style='width:4.0cm;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>ReduceModel.cell<o:p></o:p></span></p>
+  </td>
+  <td width=670 valign=top style='width:402.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>Used to automatically reduce the
+  number of compartments in a fully reconstructed neuron.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=189 valign=top style='width:4.0cm;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Cells<o:p></o:p></span></p>
+  </td>
+  <td width=670 valign=top style='width:402.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>This folder contains the files
+  defining the morphology. It now contains only the cylinder morphology.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=189 valign=top style='width:4.0cm;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>ClampCurrents<o:p></o:p></span></p>
+  </td>
+  <td width=670 valign=top style='width:402.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>The results of the simulation are
+  written to this folder. The *.iCl files are the input to the fitting
+  algorithm. To apply the correction algorithm to data from an actual
+  experiment you will need to generate a file in the format of the *.iCl files.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=189 valign=top style='width:4.0cm;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>mod<o:p></o:p></span></p>
+  </td>
+  <td width=670 valign=top style='width:402.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>A directory containing the MOD files
+  of the additional mechanisms that were tested.<o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><u><span
+style='font-family:Arial;mso-fareast-language:EN-US'>Directory <b>Fit.<o:p></o:p></b></span></u></p>
+
+<table border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;
+ border:none;mso-border-alt:solid windowtext .5pt;mso-padding-alt:0cm 5.4pt 0cm 5.4pt'>
+ <tr>
+  <td width=209 valign=top style='width:125.4pt;border:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>cylinder.fit.par<o:p></o:p></span></p>
+  </td>
+  <td width=645 valign=top style='width:387.0pt;border:solid windowtext .5pt;
+  border-left:none;mso-border-left-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>This HOC file contains the parameters
+  that control the fit. Edit this file to change the simulation.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=209 valign=top style='width:125.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Fit<o:p></o:p></span></p>
+  </td>
+  <td width=645 valign=top style='width:387.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>Main body of the fitting algorithm<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=209 valign=top style='width:125.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Leak<o:p></o:p></span></p>
+  </td>
+  <td width=645 valign=top style='width:387.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>Calculates the leak at all voltages
+  and writes it to file<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=209 valign=top style='width:125.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Display<o:p></o:p></span></p>
+  </td>
+  <td width=645 valign=top style='width:387.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>Contains the graphic display functions
+  used to show the results of the fit.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=209 valign=top style='width:125.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Algorithm.fit<o:p></o:p></span></p>
+  </td>
+  <td width=645 valign=top style='width:387.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>Several routines that are called
+  during the minimization stages.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=209 valign=top style='width:125.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Minimize.Algorithm.fit<o:p></o:p></span></p>
+  </td>
+  <td width=645 valign=top style='width:387.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>Golden bisection routines from
+  Numerical Recipes<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=209 valign=top style='width:125.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>InOut.fit<o:p></o:p></span></p>
+  </td>
+  <td width=645 valign=top style='width:387.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>Input output routines for the fit<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=209 valign=top style='width:125.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>InOut.leak<o:p></o:p></span></p>
+  </td>
+  <td width=645 valign=top style='width:387.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>Input output routines for leak
+  calculation<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=209 valign=top style='width:125.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Routines.fit<o:p></o:p></span></p>
+  </td>
+  <td width=645 valign=top style='width:387.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>General routines for the fitting
+  algorithm.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=209 valign=top style='width:125.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;direction:ltr;
+  unicode-bidi:embed'><span style='font-family:Arial;mso-fareast-language:EN-US'>Routines.leak<o:p></o:p></span></p>
+  </td>
+  <td width=645 valign=top style='width:387.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;direction:ltr;
+  unicode-bidi:embed'><span style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>General routines used for leak
+  generation.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=209 valign=top style='width:125.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>ReduceModel.cell<o:p></o:p></span></p>
+  </td>
+  <td width=645 valign=top style='width:387.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>Used to automatically reduce the
+  number of compartments in a fully reconstructed neuron.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=209 valign=top style='width:125.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Cells<o:p></o:p></span></p>
+  </td>
+  <td width=645 valign=top style='width:387.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>This folder contains the files
+  defining the morphology. It now contains only the cylinder morphology.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=209 valign=top style='width:125.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>ClampCurrents<o:p></o:p></span></p>
+  </td>
+  <td width=645 valign=top style='width:387.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>The results of the simulation are
+  written to this folder. The *.iCl files are the input to the fitting
+  algorithm. To apply the correction algorithm to data from an actual
+  experiment you will need to generate a file in the format of the *.iCl files.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=209 valign=top style='width:125.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Mod<o:p></o:p></span></p>
+  </td>
+  <td width=645 valign=top style='width:387.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>A directory containing the MOD file of
+  the dummy conductance<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=209 valign=top style='width:125.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>Output<o:p></o:p></span></p>
+  </td>
+  <td width=645 valign=top style='width:387.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>The results of the calculation are
+  written to this folder<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=209 valign=top style='width:125.4pt;border:solid windowtext .5pt;
+  border-top:none;mso-border-top-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'>SimLeak<o:p></o:p></span></p>
+  </td>
+  <td width=645 valign=top style='width:387.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext .5pt;border-right:solid windowtext .5pt;
+  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
+  padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+  none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+  style='font-family:Arial;mso-fareast-language:EN-US'><span
+  style="mso-spacerun: yes">&nbsp;</span>The simulated leak is written to this
+  folder<o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'>NOTE: We separated the
+code into several files to help with debugging and make the<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'>code more modular.
+However, this is still one program. If you change the code in one<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;mso-layout-grid-align:
+none;text-autospace:none;direction:ltr;unicode-bidi:embed'><span
+style='font-family:Arial;mso-fareast-language:EN-US'>file you may have to do
+this also in one or two other files. SO, be careful when you<o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify;line-height:150%;direction:ltr;
+unicode-bidi:embed'><span style='font-family:Arial;mso-fareast-language:EN-US'>modify
+the code in one of these files.<o:p></o:p></span></p>
+
+</div>
+
+</body>
+
+</html>

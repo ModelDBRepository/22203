@@ -1,0 +1,259 @@
+strdef emptyLine, XTitle  
+double Org[40][2000],GOF1[40],DisplayVolt[300] 
+  
+ 
+proc ShowUnCorr() { local temp1  
+g1 = new Graph()          
+g1.color(2) 
+g1.brush(0) 
+temp1=0 
+for (VStepCount=FirstVStep;VStepCount<NumVSteps;VStepCount+=1) {   
+  print "Uncorr Voltage ", vclmp[VStepCount]," mV"   
+  g1.beginline()              
+  for FitTStepCount=0,NumFitTPoints {     
+    FitTPoint =FitTPoints[FitTStepCount]   
+    measTime=MeasTimes[FitTPoint]        
+    g1.line(measTime, iclmp[VStepCount][FitTPoint]/((vclmp[VStepCount]-Ek)/1000))     
+  
+   }   
+  } 
+  g1.exec_menu("View = plot")
+  g1.label(0.5,0.95,"Uncorrected Conductances",2, 1, 0.5, 0.5, 2)
+  g1.label(0.5,0.9,ExperimentName,2, 1, 0.5, 0.5, 2)    
+  g1.flush()   
+}   
+   
+proc ShowOrg() {   
+g3 = new Graph()          
+g3.color(2)
+g3.brush(0)    
+for (VStepCount=FirstVStep;VStepCount<NumVSteps;VStepCount+=1) {   
+  print "Org Voltage ", vclmp[VStepCount]," mV"   
+  g3.beginline()              
+  for FitTStepCount=0,NumFitTPoints {     
+    FitTPoint =FitTPoints[FitTStepCount]   
+    measTime=MeasTimes[FitTPoint]        
+    g3.line(measTime, Org[VStepCount][FitTPoint])     
+      
+   }   
+  }   
+  g3.exec_menu("View = plot")
+  g3.label(0.5,0.95,"True Conductances",2, 1, 0.5, 0.5, 2)
+  g3.label(0.5,0.85,ExperimentName,2, 1, 0.5, 0.5, 2)      
+  g3.flush()
+  g3.color(1)      
+}   
+ 
+proc ShowCorr() {  local First_VCount,Last_VCount  
+  First_VCount=(vclmp[FirstVStep]+gDKVPointerConverter)/OutputVScale 
+  Last_VCount=(vclmp[LastVStep]+gDKVPointerConverter)/OutputVScale  
+  g2 = new Graph()          
+  g2.color(1)  
+  g2.brush(0)  
+  for (VStepCount=First_VCount;VStepCount<Last_VCount;VStepCount+=4) {   
+  g2.beginline()              
+  print "Corr Voltage ", (OutputVScale*VStepCount-gDKVPointerConverter)," mV"  
+ 
+  for FitTStepCount=0,NumFitTPoints {   
+    FitTPoint =FitTPoints[FitTStepCount]   
+    measTime=MeasTimes[FitTPoint]        
+    g2.line(measTime, gbar[OutputVScale*VStepCount][gbarTRes*MeasTimes[FitTPoint]])      
+   }   
+  }   
+  g2.exec_menu("View = plot") 
+  g2.label(0.5,0.95,"Corrected Conductances",2, 1, 0.5, 0.5, 2) 
+  g2.label(0.5,0.85,ExperimentName,2, 1, 0.5, 0.5, 2)      
+  g2.flush()   
+}   
+   
+   
+proc ShowOrgAndCorr() {local First_VCount,Last_VCount   
+  First_VCount=(vclmp[FirstVStep]+gDKVPointerConverter)/OutputVScale 
+  Last_VCount=(vclmp[LastVStep]+gDKVPointerConverter)/OutputVScale
+  g4 = new Graph()          
+  g4.color(1) 
+  g4.brush(0)   
+  for (VStepCount=First_VCount;VStepCount<Last_VCount;VStepCount+=2) {   
+  g4.beginline()              
+  print "Corr Voltage ", (OutputVScale*VStepCount-gDKVPointerConverter)," mV"  
+ 
+  for FitTStepCount=0,NumFitTPoints {   
+    FitTPoint =FitTPoints[FitTStepCount]   
+    measTime=MeasTimes[FitTPoint]        
+    g4.line(measTime, gbar[OutputVScale*VStepCount][gbarTRes*MeasTimes[FitTPoint]])      
+   }   
+  }   
+  g4.flush() 
+  
+  g4.color(2)   
+  for (VStepCount=FirstVStep;VStepCount<LastVStep;VStepCount+=1) {   
+  print "Org Voltage ", vclmp[VStepCount]," mV"   
+  g4.beginline()              
+  for FitTStepCount=0,NumFitTPoints {     
+    FitTPoint =FitTPoints[FitTStepCount]   
+    measTime=MeasTimes[FitTPoint]        
+    g4.line(measTime, Org[VStepCount][FitTPoint])     
+   }   
+  }   
+  g4.exec_menu("View = plot")  
+  g4.label(0.5,0.95,"True Conductances",2, 1, 0.5, 0.5, 2)
+  g4.label(0.5,0.9,"Corrected Conductances",2, 1, 0.5, 0.5, 1)
+  g4.label(0.5,0.85,ExperimentName,2, 1, 0.5, 0.5, 2)    
+  g4.flush()   
+  sprint(GFileName,"Output/%s_%s.ps",ExperimentName,"Graph")   
+  g4.printfile(GFileName)  
+}   
+ 
+
+  
+proc ShowProgress() { local jj
+	g5 = new Graph()
+	g5.brush(0)
+//	g5.color(4)
+	g5.beginline()
+	g5.flush
+	for (jj=gDKVmin;jj<=gDKVmax-1;jj+=1){
+		DisplayVolt[jj+gDKVOffset-0.5]=jj
+		g5.line(jj,gv_gDKkin3[jj+gDKVOffset-0.5])
+	}
+	g5.size(-80,70,0,50)
+	g5.label(0.5,0.02,"Voltage (mV)")
+	g5.label(0.4,0.82,"Conductance")
+	g5.color(4)
+}
+  
+func CalcGOF() { local count1, Temp_sum,First_VCount,Last_VCount, Org_sum 
+  Temp_sum=0
+  Org_sum=0 
+  First_VCount=(vclmp[FirstVStep]+gDKVPointerConverter)/OutputVScale 
+  Last_VCount=(vclmp[LastVStep]+gDKVPointerConverter)/OutputVScale 
+  for FitTStepCount=0,NumFitTPoints {
+
+    FitTPoint =FitTPoints[FitTStepCount]   
+    measTime=MeasTimes[FitTPoint] 
+    count1=FirstVStep        
+    for (VStepCount=First_VCount;VStepCount<Last_VCount;VStepCount+=2) {   
+    	GOF1[count1]=gbar[OutputVScale*VStepCount][gbarTRes*MeasTimes[FitTPoint]] 
+	count1+=1
+    }      
+    for (VStepCount=FirstVStep;VStepCount<LastVStep;VStepCount+=1) {   
+    	Temp_sum+=(Org[VStepCount][FitTPoint]-GOF1[VStepCount])^2
+	Org_sum+=(Org[VStepCount][FitTPoint])^2
+		
+    } 
+  //  printf("%8.3f   ", Temp_sum)
+  } 
+  
+  return 100*sqrt((Temp_sum/Org_sum))
+      
+}   
+   
+ 
+   
+proc CorrectProc() {     
+  startsw()  
+  Correct()   
+  ShowOrgAndCorr() 
+  sprint(GFileName,"Output/%s_%s.g",ExperimentName,"Corrected")   
+  Write(GFileName)    
+  Seconds=stopsw()  
+  Minutes=int(Seconds/60)  
+  Hours=int(Minutes/60)  
+  Seconds=Seconds-Minutes*60  
+  Minutes=Minutes-Hours*60  
+  print "+++++ Experiment Name: ", ExperimentName, "++++++++" 
+  print " " 
+  print "Cell name", CellName
+  print "Passive Parameters: (homogenous)" 
+  print "Rm: ",rm 
+  print "Ra: ",ra 
+  print "c_m: ",c_m 
+  print "Ek: ",Ek 
+  print "v_init:  ",v_init 
+  access somaA 
+  print "Diam: ", diam  
+  psection()
+  Dumm1=CalcGOF() 
+  printf ("Deviation from true kinetics %5.2f % \n", Dumm1)
+  print "Correction lasted ", Hours, " Hours ",Minutes, " Minutes ", Seconds, " Seconds"  
+}   
+   
+   
+proc LoadOrg() {local COUNT, i, File_NumVSteps, TStepCount,File_measTime, VStepCount 
+ 
+  sprint(loadProg,"../Kinetics/Output/sphere.kin")   
+  print " Loading True Kinetics from " , loadProg  // debug 
+  ropen(loadProg) 
+  File_NumVSteps=fscan() 
+  if (File_NumVSteps!=NumVSteps) { 
+    print "Total Number of Voltage Steps - Mismatch File<>Experiment (.iCl)" 
+    print "File_NumVSteps: ",File_NumVSteps, "NumVSteps: ", NumVSteps 
+  }  // debug 
+ 
+  for TStepCount=0,NumTSteps { 
+    File_measTime=fscan() 
+    if (File_measTime!=MeasTimes[TStepCount]) { 
+      print "MeasTime - Mismatch File<>Experiment (.iCl)" 
+      print "TStepCount: ",TStepCount, "File_measTime: ",File_measTime, "MeasTimes[TStepCount]: ",MeasTimes[TStepCount] 
+    }  // debug: comparing given experimental MeasTimes-Arr with meastimes in file 
+  } 
+ 
+  for VStepCount=0,NumVSteps-1 { 
+    File_vclmp = fscan() 
+    if (DebugOn) print "reading voltage: ",File_vclmp,"(VStepCount:",VStepCount,")" 
+    if (File_vclmp!=vclmp[VStepCount]) { 
+      print "VClmp  - Mismatch (.iCl) " 
+      print "VStepCount:", VStepCount, "File_vclmp: ",File_vclmp,"vclmp[VStepCount]:", vclmp[VStepCount] 
+    } 
+    for TStepCount=0,NumTSteps { 
+     Org[VStepCount][TStepCount]=fscan() 
+    } 
+  } 
+  ropen() 
+} 
+ 
+proc LoadExp(){   
+   
+  ReadIC_and_leak(ExperimentName,LeakFileName)   
+   
+}   
+proc LoadCorr(){   
+   
+  sprint(loadProg,"Output/%s_Corrected.g",ExperimentName)   
+  ropen(loadProg)   
+   
+  for VStepCount=0,int(gDKVRange/OutputVScale) {    
+      tmp=fscan()  
+    }   
+  for FitTStepCount=0,NumFitTPoints {   
+      FitTPoint =FitTPoints[FitTStepCount]   
+      tmp=fscan()   
+      for VStepCount=0,int(gDKVRange/OutputVScale) {   
+		gbar[OutputVScale*VStepCount][gbarTRes*MeasTimes[FitTPoint]]=fscan()   
+      }   
+  }   
+  ropen()   
+}   
+   
+xpanel("Cylinder simulation") 
+sprint(XTitle,"Experiment name: %s",ExperimentName)
+xvarlabel(XTitle) 
+xbutton("1. Display - Distorted","ShowUnCorr()")   
+xbutton("2. Display - True     ","ShowOrg()")   
+xbutton("3. Correct (and wait) ", "CorrectProc()")   
+xbutton("4. Show True & Corr   ","ShowOrgAndCorr()") 
+xvarlabel(emptyLine)
+xvalue("Tolerance","Tolerance")
+xvalue("Max Number of iterations", "numRun")     
+xvalue("Time","DisplayT",0,"", 0, 1 )
+xvalue("Voltage","DisplayV",0,"", 0, 1 )
+xvalue("Conductance","DisplayG",0,"", 0, 1 )
+xvalue("Iterations used","IterCount")
+xstatebutton("Verbose",&PrintVerbose)
+xpanel()   
+
+LoadExp()
+LoadOrg() 
+ShowOrg() 
+ShowProgress()
+

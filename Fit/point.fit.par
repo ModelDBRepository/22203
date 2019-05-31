@@ -1,0 +1,216 @@
+                                    // Parameters for Fit Routine
+                                    // (to be loaded first)
+
+
+    strdef ExperimentName, CellName, CellFileName, TauFileName, LeakFileName
+    objref stimSec,VProtocol,VProtocolTVector
+
+ExperimentName = "point"             // experimental data to fit
+LeakFileName = "point"             // for each cell only
+CellName  = "point"               // to be included by LoadNInit-Proc from cell.hoc
+TauFileName = "point"           // contains taus for dummy conductance
+
+    print " reading Fit-Parameters from File ",ExperimentName,".fit.par"
+
+                                    // ++++ FILTER PARAMETERS ++++
+FilterOn=0
+fZero=5000                          // filter corner frequency
+numpoles=2                          // number of times the filter will be convoluted with the data
+
+StartTau = 0
+EndTau   = 5
+                                    // ++++ CELL PARAMETERS ++++
+                                    // Cell-Morphology, Passive and active Parameters (for Fit Routine)
+
+                                    // the following is used  first by cell.hoc, then by fit.hoc
+ra        = 250
+global_ra = ra
+rm        = 20000
+c_m       = 0.75
+v_init    = -110
+celsius   = 22
+Ek        = -80
+Eca       = 60
+Epas      = -80
+
+revPot = Ek
+
+//    {xopen("cells/cell.hoc")}       // Mainen-Cell
+
+//    LoadNInit(CellName)             // proc. from cell.hoc; initializes cell: creates basal, apical, axon - Lists
+
+    sprint(CellFileName,"cells/%s.cell",CellName)
+    {xopen(CellFileName)}  // Load Cell
+
+ReduceCell=0            // reducing cell model or not in fit.hoc
+                                    //++++ VCLAMP- PARAMETERS:
+
+                                    // defining VClamp-location:
+load_file("twoclamp.hoc")
+
+somaA stimSec = new SectionRef()
+stimPosI=0.5
+stimPosV=0.5
+
+                                    // setting duration and amplitude of clamp-protocol:
+
+    VClampSeriesR = 1e-5            // setting it to something like ideal to accopunt for TEVC
+
+
+VProtocolNumSteps = 4               // including final (fit-) step
+
+    double DTSteps[VProtocolNumSteps]
+
+    double VProtocolTstart[VProtocolNumSteps]
+
+    VProtocol = new Vector(VProtocolNumSteps)
+
+    VProtocolTVector = new Vector(VProtocolNumSteps)
+
+
+VProtocol.x[0]      = -110
+DTSteps[0]          = 100
+VProtocolTstart[0]  = 0
+
+VProtocol.x[1]      = -110
+DTSteps[1]          = 10
+VProtocolTstart[1]  = 8000  // start times!
+
+VProtocol.x[2]      = -110
+DTSteps[2]          = 0.1
+VProtocolTstart[2]  = 8400
+
+VProtocol.x[3]      = -80
+DTSteps[3]          = 0.025
+VProtocolTstart[3]  = 8410  // i.e. beginning of measurements
+
+dtAdapt=1
+
+MeasTStart = VProtocolTstart[VProtocolNumSteps-1]  // beginning of measurements, i.e. also  beginning of kinetics in gDK.mod
+
+for VProtCount=1,VProtocolNumSteps-1 {     // make sure that voltage will be = VProtocol[x] for TStart[x] <= t < TStart[x+1]
+  VProtocolTVector.x[VProtCount]=VProtocolTstart[VProtCount]-DTSteps[VProtCount]
+}
+
+Experimental_dt = 0.025             // basic integration time step
+
+                                    // scaled dts for t>MeasTStart (i.e. within measurements):
+DTRes = 1/100                       // "dt=measTime*DTRes" -scaling
+DTmin = 0.025                       // minimal dt; all dts will be n*dtmin
+
+
+
+                                    // Voltage - Steps:  (must match exp. data)
+
+NumVSteps = 16
+VStep = 10                          // height of VStep
+FirstVStep = 1                     // VStep to start Fit Routine at
+LastVStep = NumVSteps-1
+VStepDirection = 1                  // for toggling backward/forward calculation
+
+    double vclmp[NumVSteps]         // Voltages starting at COUNT=0!!
+
+                                    // Initializing VClamp- Array:
+for VStepCount=0,NumVSteps-1 {      // array starts at 0
+  vclmp[VStepCount] =-80+VStepCount*VStep}
+
+
+double org_taus[NumVSteps]		// array to store original taus
+
+
+                                    // ++++ TIMES ++++
+
+
+
+                                    // Time - Steps:
+                                    // timescale in experimental data:
+
+MaxMeasTime = 50                   // unit is ms!!
+ExpTRes =  10                        // steps per ms
+NumTSteps = ExpTRes*MaxMeasTime     // i.e. number of timepoints at which experimental data is available
+
+    double MeasTimes[NumTSteps+1]   // including time ZERO
+
+                                    // Initialize ExpMeasTimepoint-Array (must match timescale in *.iCl:
+for TStepCount=0, NumTSteps  MeasTimes[TStepCount]=TStepCount* 1/ExpTRes
+                                    // times in [ms]!!
+
+
+                                    // Time - Steps:
+                                    // Time-Points out of  ExpMeasTimes-array from Exp. at which fit is supposed to be done:
+NumFitTPoints = 100
+
+    double FitTPoints[NumFitTPoints+1]
+
+                                    // Initialize FitTPoints:
+for FitTStepCount=0, NumFitTPoints  FitTPoints[FitTStepCount] =FitTStepCount
+                                    // i.e. fit at all meas.points
+
+
+
+
+
+                                    // ++++ CURRENTS AND CONDUCTANCES ++++
+
+                                    // IClamp-Array for exp. data:
+    double iclmp[NumVSteps][NumTSteps+1]
+
+                                    // corresponding Ileak-Array:
+    double leak[NumVSteps][NumTSteps+1]
+
+                                    // (both filled later by ReadICandLeak)
+
+                                    // temporal resolution of gbar[voltage][gbarTRes * MaxMeasTime] -Array:
+gbarTRes  =   10                     // steps per ms
+gbarNumTSteps = gbarTRes*MaxMeasTime
+                                    // MaxMeasTime is the same for experimental data and max g(t)
+
+gDKVmin = -120
+gDKVmax = 180
+gDKVRange = gDKVmax-gDKVmin         // caution: has to match gv[] in gDK.mod
+                                    // VRange is relevant both for gv[] and tau[] in gDK.mod
+OutputVScale = 5                    // print gbar[v] to file in .. mV steps
+gDKVOffset = 120.5                  // voltage Offset in gDK.mod, used by fit.hoc
+    gDKVPointerConverter = gDKVOffset - 0.5
+                                    // must simply be added to convert real voltages->Pointer, subtracted for vice versa
+
+    double gbar[gDKVRange+1][gbarTRes*(MaxMeasTime+1)]
+
+
+    double InitialTaus[gDKVRange+1] // estimated taus read from file
+
+
+
+                                    // ++++ FIT - PARAMETERS ++++
+
+Tolerance=0.001                     // tolerance of squr deviation of deltaI in Algorithm
+
+startG  = -3                        // logbase2of lastg (initial Value of Dummy conductance)
+numRun  = 40                        // number of iterations
+PrintVerbose = 0
+
+                                    // Offset configuration for Fit routine:(i.e. voltage attenuation)
+
+NumVOffsets = 1
+
+    double VOffset[NumVOffsets*2]   // entry pairs: from voltage $1 use offset $2
+
+VOffset[0]=revPot+70                // scheme: if v>Voffset[0] offset=VOffset[1]
+VOffset[1]=2
+                                    // array must be filled in increasing order! no "else" used in Algorithm.fit
+UseOffset = 1
+
+DebugOn = 0
+
+
+
+
+
+
+
+
+
+
+
+
+

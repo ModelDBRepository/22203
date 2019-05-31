@@ -1,0 +1,27 @@
+    print "loading output-routine for leak ......"
+
+
+proc WriteLeakCurrents() { local TStepCount, VStepCount
+
+// +++++   LEAK  +++++
+
+  sprint(iClampFileName,"SimLeak/%s.iL",LeakFileName)
+  print " Writing LeakCurrents to ", iClampFileName //debug
+  wopen(iClampFileName)  // WriteOpen /ClampCurrents/ExperimentName.iCl
+
+  fprint(" ExperimentName: _%s_",ExperimentName)
+
+  fprint(" Number of recorded voltage steps:\t\t\t\t%g\n",NumVSteps)
+  fprint("  vclmp \t  iclmp(time) \n \t")
+  for TStepCount=0,NumTSteps fprint("%g\t",MeasTimes[TStepCount])
+  fprint("\n")
+
+  for VStepCount=0,NumVSteps-1 {
+    fprint("%g\t",vclmp[VStepCount])
+    for TStepCount=0,NumTSteps {
+      fprint("%g\t",leak[VStepCount][TStepCount])
+    }   // writes: V  I(V,t1)  I(V,t2) ...
+  fprint("\n")
+  } // next v
+  wopen()
+}

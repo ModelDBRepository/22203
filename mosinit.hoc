@@ -1,0 +1,6 @@
+if (unix_mac_pc()==1) {
+	system("sh Batch.Linux")
+} else {
+	print "auto-launch currently only configured for linux"
+	print "please examine the archive for mswin instructions"
+}

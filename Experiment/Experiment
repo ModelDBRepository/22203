@@ -1,0 +1,63 @@
+// EXPERIMENT-file, exp.par is loaded first
+
+
+
+// VARIABLE CHECK: //
+
+  print " utilized Timesteps: "
+  for TStepCount=0, NumTSteps print TStepCount, ":  " , MeasTimes[TStepCount], "ms"
+
+  print " utilized VoltageSteps: "
+  for VStepCount=0, NumVSteps-1 {
+    print VStepCount, ": " , vclmp[VStepCount]}
+
+
+  print "+++++ Experiment Name: ", ExperimentName, "++++++++"
+  print " "
+  print " Passive Parameters: (if homogenous)"
+  print "Rm: ",rm
+  print "Ra: ",ra
+  print "c_m: ",c_m
+  print "Ek: ",Ek
+  print "v_init:  ",v_init
+  print "gkslow:", gKslow
+  print "gkfast:", gKfast
+
+
+
+// VOLTAGE CLAMP PARAMETERS  //
+// all explicitly set by Experiment.par
+
+stimSec.sec vC  = new   TwoElectrodeIdealVClamp() // perfect voltage clamp at stimSec
+
+stimSec.sec vC.xmeasure(stimPosV)
+stimSec.sec vC.xinject(stimPosI)
+
+dt = Experimental_dt
+
+
+
+
+    xopen("Routines.exp")   // Loading Clamp-Routines
+
+    xopen("InOut.exp")      // Loading Input/Output-Routines
+
+
+// Main Program:
+
+
+
+MeasureCurrents()
+
+if (gKslow!=0) forall gbar_kslow=0     // for leak calculation
+if (gKfast!=0) forall gbar_kfast=0
+if (gKv!=0) forall gbar_kv=0
+if (gKm!=0) forall gbar_km=0
+if (gKap!=0) forall gkabar_kap=0
+
+CalcLeak()
+SubtractLeak()
+
+WriteClampCurrents(CurrentFileName)
+
+

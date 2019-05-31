@@ -1,0 +1,30 @@
+echo "Compiling MOD files ...."  
+cd Kinetics/mod  
+nrnivmodl   
+cd ../../Experiment/mod  
+nrnivmodl   
+cd ../../Fit/mod  
+nrnivmodl   
+  
+  
+echo "MOD files compiled"  
+pwd  
+echo "calculating original kinetics..."  
+cd ../../Kinetics  
+mod/i686/special cylinder.kin.par Kinetics   
+  
+echo "running the Experiment..."  
+cd ../Experiment  
+mod/i686/special cylinder.exp.par Experiment   
+echo "done with the Experiment"  
+/bin/cp ClampCurrents/cylinder.iCl ../Fit/ClampCurrents  
+    
+echo "Calculating the Leak..."  
+cd ../Fit
+mod/i686/special cylinder.fit.par Leak   
+
+echo "Running the INteractive Correction dialogue"  
+mod/i686/special cylinder.fit.par Fit -   
+
+echo "all done"
+

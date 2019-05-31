@@ -1,0 +1,12 @@
+
+    print "creating a one compartment cell"
+
+create somaA
+
+somaA {
+  diam = 10
+  L = 10
+  nseg = 1
+  for(x) print "Area: ",area(x)
+  print "nseg: ",nseg," diam: ",diam,"L: ",L
+}

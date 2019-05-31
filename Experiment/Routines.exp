@@ -1,0 +1,114 @@
+    print "loading clamp routines for experiment ....."
+
+// CLAMP-ROUTINES for EXPERIMENT
+
+proc init() {
+  finitialize(v_init)
+  fcurrent()
+}
+
+
+proc OLDrun() { local tstepcount
+//  while (t<tstop) {       // doesn't work properly for unknown reason
+  for tstepcount=1,((tstop-t)/dt) {
+    if (DebugOn==2) print "time: ",t," dt:",dt," voltage:",vC.amp1
+    if (DebugOn==2) {
+      forall print "time: ",t," dt:",dt,"voltage:",vC.amp1, " gkfast:", gkfast_kfast," gbar:", gbar_kfast
+    }
+    if (DebugOn==2) print "debug run1"
+    fadvance()
+    if (DebugOn==2) print "debug run2"
+    if (DebugOn==2) print "time: ",t,"tstop:",tstop,"tstepcount:",tstepcount," dt:",dt," voltage:",vC.amp1
+    if (DebugOn==2) if (t<tstop) print "yes",t,tstop else print "no"
+  }
+}
+
+proc run() { local tstepcount
+  for tstepcount=1,((tstop-t)/dt) {
+    if (DebugOn==7) print "time: ",t," dt:",dt," voltage:",vC.vc
+    if (DebugOn==2) {
+      forall print "time: ",t," dt:",dt,"voltage:",vC.amp1, " gkfast:", gkfast_kfast," gbar:", gbar_kfast
+    }
+    if (DebugOn==2) print "debug run1"
+    fadvance()
+    if (DebugOn==2) print "debug run2"
+    if (DebugOn==2) print "time: ",t,"tstop:",tstop,"tstepcount:",tstepcount," dt:",dt," voltage:",vC.amp1
+    if (DebugOn==2) if (t<tstop) print "yes",t,tstop else print "no"
+  }
+}
+
+
+proc CalcLeak() { local VStepCount, TStepCount //m simulating without kinetics
+  print " Simulating LeakCurrents (by setting all active gs=0):"  //debug
+
+  for VStepCount=0,NumVSteps-1 {
+    VProtocol.x[VProtocolNumSteps-1]  =vclmp[VStepCount]
+
+    
+    VProtocol.play(&vC.b.x[4],VProtocolTVector)
+    init()
+
+    for VProtCount=0,VProtocolNumSteps-2 {    // pre-pulses
+      tstop=VProtocolTstart[VProtCount+1]
+      dt=DTSteps[VProtCount]  // adapted dts
+      run()
+    }
+
+    TStepCount=0
+    leak[VStepCount][TStepCount] =vC.ic
+
+                            //starting Measurements:
+    dt = DTSteps[VProtocolNumSteps-1]
+
+    for TStepCount=1,NumTSteps {
+      tstop=MeasTStart+MeasTimes[TStepCount]
+      run()
+      leak[VStepCount][TStepCount] =vC.ic
+    }// time
+  }// voltage
+}// proc CalcLeak
+
+
+proc MeasureCurrents() {local VStepCount, TStepCount, VProtCount
+  print "+++++++++++++++++ doing the experiment +++++++++++++"
+
+  for VStepCount=0,NumVSteps-1 {
+    VProtocol.x[VProtocolNumSteps-1]  =vclmp[VStepCount]
+    print "Voltage: ",VProtocol.x[VProtocolNumSteps-1]
+   VProtocol.play(&vC.b.x[4],VProtocolTVector)
+
+    init()
+
+    for VProtCount=0,VProtocolNumSteps-2 {    // pre-pulses
+      tstop=VProtocolTstart[VProtCount+1]
+      dt=DTSteps[VProtCount]  // adapted dts
+      run()
+  
+
+   }
+    TStepCount=0
+    iclmp[VStepCount][TStepCount] =vC.ic
+    VClmp[VStepCount][TStepCount] = vC.vc
+    dt = DTSteps[VProtocolNumSteps-1]
+    for TStepCount=1,NumTSteps {
+      tstop=MeasTStart+MeasTimes[TStepCount]
+      run()
+      iclmp[VStepCount][TStepCount] =vC.ic
+      VClmp[VStepCount][TStepCount] = vC.vc  
+ 
+    }// time
+  }// voltage
+}// proc MeasureCurrents
+
+
+proc SubtractLeak() { local VStepCount, TStepCount
+                       //m decrease IClamp-Entries by simulated
+                      //m Leak from CalcLeak()
+  print " Subtracting calculated Leak " //debug
+  for VStepCount=0,NumVSteps-1 {
+    for TStepCount=0,NumTSteps {
+      iclmp[VStepCount][TStepCount]-=leak[VStepCount][TStepCount]
+    }
+  }
+}
+

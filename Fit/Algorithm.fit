@@ -1,0 +1,131 @@
+print "loading correction algorithm routines ....."
+
+// ++++ ROUTINES FOR CORRECTION ALGORITHM ++++
+
+// Global Display Variables
+
+DisplayT=0
+DisplayV=0
+DisplayG=0
+objref g1,g2, g3 , g4, g5
+strdef NullStr
+  
+IterCount=0
+fa=0
+fb=0
+fc=0
+ax=0
+bx=0
+cx=0
+offset=1
+measTime=0
+FitTPoint=0
+ImageCount=1
+DummCount=1
+// ("global" variables for correction routines in this and following files)
+
+
+
+proc Correct() {local g, VCount,VStepCountB, VStepCount, FitTStepCount, TStepCount
+
+  for VStepCountB=0,gDKVRange-1 {
+    for TStepCount=0,gbarTRes*MaxMeasTime-1 gbar[VStepCountB][TStepCount]=0
+  } // initializing gbar-array
+
+  ReadIC_and_leak(ExperimentName,LeakFileName)
+  g3.label(0.5,0.9,"Corrected Conductances",2, 1, 0.5, 0.5, 1)
+                   
+  for FitTStepCount=0,NumFitTPoints {  // only fitting at previously defined timepoints out of MeasTimes-Array
+  	FitTPoint =FitTPoints[FitTStepCount]
+  	measTime=MeasTimes[FitTPoint]     // converted into real meas time
+  	measTime_gDKkin3 = measTime
+
+
+  	for (VStepCount=FirstVStep;VStepCount*VStepDirection<=LastVStep;VStepCount+=VStepDirection*1) {
+    		VProtocol.x[VProtocolNumSteps-1]=vclmp[VStepCount] 
+    		g3.beginline()    
+
+
+      		if (PrintVerbose==1) print "V : ",vclmp[VStepCount],"  i total : ",iclmp[VStepCount][FitTPoint]+leak[VStepCount][FitTPoint],  " i-leak: ",iclmp[VStepCount][FitTPoint], " t : ", measTime
+      		DisplayV=vclmp[VStepCount]
+      		DisplayT=measTime
+      		for VCount=0,gDKVRange-1 gv_gDKkin3[VCount]=gbar[VCount][gbarTRes*measTime]  // initialize gv in gDK.mod at current time
+
+
+      		offset=1
+      		if (UseOffset) for VOffsetCount=0,NumVOffsets-1 {   // the area of voltage attenuation used
+        		if (vclmp[VStepCount]>VOffset[VOffsetCount*2])   offset = VOffset[VOffsetCount*2+1]
+      			}
+
+      		ax=50*abs(iclmp[VStepCount][FitTPoint]/(vclmp[VStepCount]-revPot))  // first guess(Ohm)
+      		bx=ax*1.5
+      		IterCount=3
+      		cx=bracket(VStepCount)
+      		if (PrintVerbose==1) print "Bracketed minimum in ", IterCount, " Function evaluations"
+      		IterCount=0
+      		if(PrintVerbose==1) printf ("Minimizing")
+		//g5.erase()
+		g5.flush()
+     		g=golden(VStepCount)
+      		DisplayG=UpdateGbarArrays(VStepCount,g)
+      		g3.color(3)      
+      		g3.mark(measTime, abs(DisplayG),"O",4)
+      		g3.flush() 
+		g5.erase()    
+      		doNotify()
+      		if (PrintVerbose==1) printf ("\nConverged to a conductance of %7.4f pS/micron^2  in %4.0f iterations\n",abs(g), IterCount)
+    	} // running over voltage
+    	sprint(GFileName,"Output/%s.g",ExperimentName)  // for saving data if runtime error occurs
+    	Write(GFileName)
+    	g3.exec_menu("View = plot")
+  } // running over time
+  sprint(GFileName,"Output/%s.g",ExperimentName)
+  Write(GFileName)
+
+}
+
+
+func LSQ_Calc() { local VStepCount,G, delta, cI
+  VStepCount=$1
+  G=abs($2)  // best guess so far
+  UpdateGbarArrays(VStepCount,G)
+  cI =  ClampCurr()
+  delta = ((cI-leak[VStepCount][FitTPoint])-iclmp[VStepCount][FitTPoint])^2
+  if (DebugOn==4) if (VStepCount>4) forall print "G: ",G,"gk:",gk_gDKkin3,"tau_gdk:",tau_gDKkin3[v+VoltageOffset_gDKkin3],"cI: ",cI," cI-leak:",cI-leak[VStepCount][FitTPoint],"ref-iclmp: ",iclmp[VStepCount][FitTPoint]
+  doEvents()
+  return delta
+}
+
+
+func UpdateGbarArrays() { local VStepCount,G,VCount,interpolStepCount,trueVoltage, trueVPointer,vStep
+    // updates gbar[] and gv[]-Arrays from current VStep ($1) on due to new estimated G($2)
+  VStepCount=$1
+  G=abs($2)
+  trueVoltage=vclmp[VStepCount-offset]  //  interpolate over a range of voltages due to voltage-attenuation
+  TrueVPointer=trueVoltage+gDKVPointerConverter  //  pointer-conversion for gbar[] and gv[]
+  vStep=VStep   // set in ParameterFile
+  // INTERPOLATION of Gs:
+  for VCount=TrueVPointer+1,gDKVRange-1 {
+    interpolStepCount=VCount-TrueVPointer
+    gv_gDKkin3[VCount]= gv_gDKkin3[TrueVPointer]+(G-gv_gDKkin3[TrueVPointer])/vStep/offset*interpolStepCount
+    if (gv_gDKkin3[VCount]<0) gv_gDKkin3[VCount]=0
+    gbar[VCount][gbarTRes*measTime]=gv_gDKkin3[VCount]
+    
+  }
+  
+   trueVoltage=vclmp[VStepCount]
+   TrueVPointer=trueVoltage+gDKVPointerConverter
+   
+  for VCount=40, TrueVPointer {	
+  	g5.mark(VCount-gDKVPointerConverter,gv_gDKkin3[VCount],"o",2)
+  }
+   
+   return gbar[TrueVPointer][gbarTRes*measTime]
+}
+
+
+    xopen("Minimize.Algorithm.fit")  // includes numerical routines
+
+
+
+

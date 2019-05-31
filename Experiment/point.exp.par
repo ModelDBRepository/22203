@@ -1,0 +1,208 @@
+// Parameters for Experiment, to be loaded first
+
+    strdef iClampFileName, loadProg
+    objref vC, sh, st
+
+    load_file("stdgui.hoc")
+    {load_proc("nrnmainmenu") nrnmainmenu()}
+    load_file("twoclamp.hoc")
+
+
+    strdef ExperimentName, CellName, CellFileName, CurrentFileName
+
+    objref stimSec,VProtocol,VProtocolTVector
+
+ExperimentName = "point"
+sprint(CurrentFileName,"ClampCurrents/%s.iCl",ExperimentName)
+CellName  = "point" // to be included later
+
+print "reading experimental Parameters from File",ExperimentName,".exp.par"
+
+
+// ++++ CELL PARAMETERS ++++
+// Cell-Morphology, Passive and active Parameters
+
+// the following is inserted later
+ra        = 250
+global_ra = ra
+rm        = 20000
+c_m       = 0.75
+v_init    = -110
+celsius   = 22
+Ek        = -80
+Eca       = 60
+Epas      = -60
+
+gKslow    = 0
+gKfast    = 50
+gKv       = 0
+gKm	  = 0
+gKap	  = 0
+
+ReduceCell = 1
+
+
+    sprint(CellFileName,"cells/%s.cell",CellName)
+    {xopen(CellFileName)}  // Load Cell
+
+
+// defining VClamp-location:
+somaA stimSec = new SectionRef()
+stimPosI=0.5
+stimPosV=0.5
+
+
+// CELL - manipulations:
+
+// reducing cell model:
+
+    if (ReduceCell) {
+      xopen("ReduceModel.cell")
+      ReduceModel()
+    }
+// inserting PASSIVE & ACTIVE properties:
+
+forall {
+  // passive:
+  insert pas
+  Ra = ra
+  cm = c_m
+  g_pas = 1/rm
+  e_pas = Epas
+  // active:
+  if (gKslow!=0) {
+    insert kslow
+    gbar_kslow = gKslow   // explicitely set above
+  }
+  if (gKfast!=0) {
+    insert kfast
+    gbar_kfast = gKfast
+  }
+  if (gKv!=0) {
+    insert kv
+    gbar_kv = gKv
+  }
+  if (gKm!=0) {
+    insert km
+    gbar_km = gKm
+  }
+  if (gKap!=0) {
+    insert kap
+    gkabar_kap = gKap
+  }
+  ek=Ek
+}
+
+
+
+//++++ VCLAMP- PARAMETERS:
+
+
+// setting duration and amplitude of clamp-protocol:
+
+VClampSeriesR = 1e-5 // setting it to something like ideal to accopunt for TEVC
+
+
+
+VProtocolNumSteps = 4               // including final (fit-) step
+
+    double DTSteps[VProtocolNumSteps]
+
+    double VProtocolTstart[VProtocolNumSteps]
+
+    VProtocol = new Vector(VProtocolNumSteps)
+
+    VProtocolTVector = new Vector(VProtocolNumSteps)
+
+VProtocol.x[0]      = -110
+DTSteps[0]          = 100
+VProtocolTstart[0]  = 0
+
+VProtocol.x[1]      = -110
+DTSteps[1]          = 10
+VProtocolTstart[1]  = 8000  // start times!
+
+VProtocol.x[2]      = -110
+DTSteps[2]          = 0.1
+VProtocolTstart[2]  = 8400
+
+VProtocol.x[3]      = -80
+DTSteps[3]          = 0.025
+VProtocolTstart[3]  = 8410  // i.e. beginning of measurements
+
+
+
+MeasTStart = VProtocolTstart[VProtocolNumSteps-1]  // beginning of measurements
+
+for VProtCount=1,VProtocolNumSteps-1 {     // make sure that voltage will be //    =VProtocol[x] for TStart[x] <= t < TStart[x+1]
+  VProtocolTVector.x[VProtCount]=VProtocolTstart[VProtCount]-DTSteps[VProtCount]
+}
+
+Experimental_dt = 0.025             // basic integration time step
+
+
+
+
+// Voltage - Steps:
+
+NumVSteps = 16
+VStep = 10    // height of VStep
+FirstVStep = 2      // VStep to start Fit Routine at
+LastVStep = NumVSteps-1
+VStepDirection = 1   // for toggling backward/forward calculation
+Vmin = -80
+
+    double vclmp[NumVSteps]  //Voltages starting at COUNT=0!!
+
+for VStepCount=0,NumVSteps-1 {//array starts at 0
+  vclmp[VStepCount] =Vmin+VStepCount*VStep}  // Initializing VClamp- Array
+
+
+
+// ++++ TIMES ++++
+
+
+Experimental_dt = 0.025 // basic integration time step
+
+
+// Time - Steps:
+// timescale in experimental data:
+
+MaxMeasTime = 50  // unit is ms!!
+ExpTRes = 10      // steps per ms
+NumTSteps = ExpTRes*MaxMeasTime   // i.e. number of timepoints at which 
+// experiment is supposed to be done
+
+    double MeasTimes[NumTSteps+1]  // including time ZERO
+
+// Initialize ExpMeasTimepoint-Array (must match timescale in *.iCl:
+for TStepCount=0, NumTSteps  MeasTimes[TStepCount]=TStepCount* 1/ExpTRes //times in [ms]!!
+
+
+
+
+// ++++ CURRENTS AND CONDUCTANCES ++++
+
+// IClamp-Array for exp. data:
+    double iclmp[NumVSteps][NumTSteps+1]
+
+// corresponding Ileak-Array:
+    double leak[NumVSteps][NumTSteps+1]
+    
+// Clamp Voltage array
+    double  VClmp[NumVSteps][NumTSteps+1]
+
+
+DebugOn = 0
+
+
+
+
+
+
+
+
+
+
+
+

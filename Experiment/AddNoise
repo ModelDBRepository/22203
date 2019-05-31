@@ -1,0 +1,107 @@
+strdef loadProg
+proc ReadIC() {local COUNT, i, File_NumVSteps, TStepCount,File_measTime, VStepCount
+     // $s1 = ExperimentName
+     // $s2 = LeakName (more general)
+
+  sprint(loadProg,"ClampCurrents/%s.iCl",$s1)
+  print " Loading ClampCurrents from " , loadProg  // debug
+  ropen(loadProg)
+  File_NumVSteps=fscan()
+  print "NumVSteps: ", File_NumVSteps
+  for TStepCount=0,NumTSteps  File_measTime=fscan()
+
+  for VStepCount=0,NumVSteps-1 {
+    File_vclmp = fscan()
+    if (DebugOn) print "reading voltage: ",File_vclmp,"(VStepCount:",VStepCount,")"
+    if (File_vclmp!=vclmp[VStepCount]) {
+      print "VClmp  - Mismatch (.iCl) "
+      print "VStepCount:", VStepCount, "File_vclmp: ",File_vclmp,"vclmp[VStepCount]:", vclmp[VStepCount]
+    }
+    for TStepCount=0,NumTSteps {
+     iclmp[VStepCount][TStepCount]=fscan()
+    }
+  }
+  ropen()
+
+}
+
+objref r
+r = new Random(0)
+
+proc AddNoise() {local VStepCount, TStepCount
+  for VStepCount=0,NumVSteps-1 {
+    for TStepCount=0,NumTSteps {
+     noise=r.normal (0,amplNoise^2) / 1000  // in nA as amplNoise in pA
+     iclmp[VStepCount][TStepCount]+=noise
+    }
+  }
+}
+  
+proc WriteClampCurrents() { local TStepCount, VStepCount
+
+  sprint(iClampFileName,"ClampCurrentsNoise/%s.iCl",ExperimentName)
+  print " Writing ClampCurrents to ", iClampFileName //debug
+  wopen(iClampFileName)  //m WriteOpen /ClampCurrents/ExperimentName.iCl
+
+  fprint(" ExperimentName: _%s_",ExperimentName)
+
+  fprint(" Number of recorded voltage steps:\t\t\t\t%g\n",NumVSteps)
+  fprint("  vclmp \t  iclmp(time) \n \t")
+  for TStepCount=0,NumTSteps fprint("%g\t",MeasTimes[TStepCount])
+  fprint("\n")
+
+  for VStepCount=0,NumVSteps-1 { // writes: V  I(V,t1)  I(V,t2) ...
+    fprint("%g\t",vclmp[VStepCount])
+    for TStepCount=0,NumTSteps {
+      fprint("%g\t",iclmp[VStepCount][TStepCount])
+    }
+  fprint("\n")
+  } //m next v
+  wopen()
+
+  sprint(iClampFileName,"ClampCurrentsNoise/%s.gCl",ExperimentName)
+  print " Writing Conductance estimate from ClampCurrents to ", iClampFileName //debug
+  wopen(iClampFileName)  //m WriteOpen /ClampCurrents/ExperimentName.iCl
+
+  fprint("\t")
+  for VStepCount=0,NumVSteps-1 { 
+    fprint("%g\t",vclmp[VStepCount])
+  } 
+  fprint("\n")
+  for TStepCount=0,NumTSteps {
+    fprint("%g\t",MeasTimes[TStepCount])
+    for VStepCount=0,NumVSteps-1 { 
+      if (vclmp[VStepCount]==Ek) fprint("0/t") else {
+        fprint("%g\t",iclmp[VStepCount][TStepCount]/(vclmp[VStepCount]-Ek))
+      }
+    }
+    fprint("\n")
+  }
+
+  wopen()
+
+  sprint(iClampFileName,"ClampCurrentsNoise/%s.Show.iCl",ExperimentName)
+  print " Writing Conductance estimate from ClampCurrents to ", iClampFileName //debug
+  wopen(iClampFileName)  //m WriteOpen /ClampCurrents/ExperimentName.iCl
+
+  fprint("\t")
+  for VStepCount=0,NumVSteps-1 { 
+    fprint("%g\t",vclmp[VStepCount])
+  } 
+  fprint("\n")
+  for TStepCount=0,NumTSteps {
+    fprint("%g\t",MeasTimes[TStepCount])
+    for VStepCount=0,NumVSteps-1 { 
+      fprint("%g\t",iclmp[VStepCount][TStepCount])
+      
+    }
+    fprint("\n")
+  }
+
+  wopen()
+
+}
+
+ReadIC(ExperimentName)
+AddNoise()
+WriteClampCurrents()

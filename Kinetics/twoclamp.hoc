@@ -1,0 +1,79 @@
+
+
+begintemplate TwoElectrodeIdealVClamp
+
+
+public xmeasure, xinject, set_vc, vc, ic, valid
+
+
+// usage:
+// e = TwoElectrodeIdealVClamp()
+// section e.xmeasure(x) // measurement electrode location
+// section e.xinject(x) // current injection electrode location
+// e.set_vc(control_potential) // sets the value of b.x[2]
+// e.vc() // returns the value of b.x[2]
+// e.ic() // returns the value of y.x[2]
+// e.valid() returns true if the clamp is part of the simulation
+
+
+public b, y // if you want to use the addresses instead of the
+        // functions for plotting. They are necessary for
+        // recording the current into a Vector, or playing a Vector into
+        // the control potential.
+
+
+objref c, g, y, b, model, nil
+objref sec[2], x, sl
+
+
+proc init() {
+print "init"
+        c = new Matrix(3,3,2) //sparse
+        g = new Matrix(3,3)
+        y = new Vector(3)
+        b = new Vector(3)
+        g.x[1][2] = -1
+        g.x[2][0] = 1
+        x = new Vector(2)
+print "init return"
+}
+
+
+proc install() {
+        if (sec[0] != nil && sec[1] != nil) {
+                sl = new SectionList()
+                sec[0].sec sl.append()
+                sec[1].sec sl.append()
+                model = new LinearMechanism(c, g, y, b, sl, x)
+        }
+}
+
+
+proc xmeasure() {
+        x.x[0] = $1
+        sec[0] = new SectionRef()
+        install()
+}
+
+
+proc xinject() {
+        x.x[1] = $1
+        sec[1] = new SectionRef()
+        install()
+}
+
+
+proc set_vc() { b.x[2] = $1 }
+func vc() { return b.x[2] }
+func ic() { return y.x[2] }
+
+
+func valid() {
+        if (model != nil) {
+                return model.valid
+        }
+        return 0
+}
+
+
+endtemplate TwoElectrodeIdealVClamp

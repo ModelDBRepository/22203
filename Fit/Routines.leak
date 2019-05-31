@@ -1,0 +1,51 @@
+    print "loading clamp routines for calculating leak ......"
+
+// CLAMP-ROUTINES for LEAK
+
+proc init() {
+  finitialize(v_init)
+  fcurrent()
+}
+
+
+proc run() { local tstepcount
+//  while (t<tstop) { // doesn't work properly for some obscure reason
+ for tstepcount=1,((tstop-t)/dt) {
+ //   if (DebugOn) print "time: ",t," dt:",dt," voltage:",vC.amp1
+    fadvance()
+  }
+}
+
+
+
+proc CalculateLeak() { local VStepCount, TStepCount //m simulating without kinetics
+  print " Simulating LeakCurrents (by setting all active gs=0):"  //debug
+
+  for VStepCount=0,NumVSteps-1 {
+    VProtocol.x[VProtocolNumSteps-1]  =vclmp[VStepCount]
+
+    VProtocol.play(&vC.b.x[4],VProtocolTVector)
+
+    init()
+
+    for VProtCount=0,VProtocolNumSteps-2 {    // pre-pulses
+      tstop=VProtocolTstart[VProtCount+1]
+      dt=DTSteps[VProtCount]  // adapted dts
+      run()
+    }
+
+    TStepCount=0
+    leak[VStepCount][TStepCount] =vC.ic
+
+                            //starting Measurements:
+    dt = DTSteps[VProtocolNumSteps-1]
+
+    for TStepCount=1,NumTSteps {
+      tstop=MeasTStart+MeasTimes[TStepCount]
+      run()
+      leak[VStepCount][TStepCount] =vC.ic
+    }// time
+  }// voltage
+}// proc CalcLeak
+
+

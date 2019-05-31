@@ -1,0 +1,58 @@
+// Fit Procedure, fitting for given experimental currents
+
+strdef loadProg, GFileName
+objref vC, st
+
+load_file("stdgui.hoc")
+{load_proc("nrnmainmenu") nrnmainmenu() }
+
+
+// ++++ CELL ++++
+// active & passive parameters //
+
+// reducing cell model:
+
+    if (ReduceCell) {
+      xopen("ReduceModel.cell")
+      ReduceModel()
+    }
+
+forall {
+  // passive:
+  insert pas
+  Ra = ra
+  cm = c_m
+  g_pas = 1/rm
+  e_pas = Epas
+  // dummy active:
+  insert gDKkin3
+  gbar_gDKkin3 = 0
+  ek = Ek
+  for(x) gbar_gDKkin3(x)=0
+  VoltageOffset_gDKkin3=gDKVOffset  // set by Parameter-File
+  tstart_gDKkin3=MeasTStart         // beginning of kinetics in gDK.mod
+}
+
+//add_spines()
+
+dt = Experimental_dt  // cf. Parameter-File
+
+// VOLTAGE CLAMP
+// all explicitly set by Parameter-File:
+
+stimSec.sec vC  = new TwoElectrodeIdealVClamp()    // perfect tow electrode voltage clamp 
+
+stimSec.sec vC.xmeasure(stimPosV)
+stimSec.sec vC.xinject(stimPosI)
+
+
+// ROUTINES
+
+    xopen("InOut.fit")      // including input/output routines
+    xopen("Routines.fit")   // including clamp and filter routines
+    xopen("Algorithm.fit")  // including correction algorithm
+    xopen("Display")
+
+
+
+

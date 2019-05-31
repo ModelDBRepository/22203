@@ -1,0 +1,155 @@
+print "loading clamp & filter routines ....."
+
+// ++++ FILTER ROUTINES ++++
+
+objref v1,v2,v3,v4,v5,vr,vi   // vectors for filtering
+//double data[100000]
+
+v1 = new Vector()
+vr = new Vector()
+vi = new Vector()
+v4 = new Vector()
+
+// Filter Variables:
+FilterVectorSize=0      // set later
+FilterVectorCount=0     // used globally
+
+
+func Round() {
+  return $1-$1%1
+}
+
+proc AKfilter() {local i,j,denom,I1,R1,fstep,NewR,NewI,TStep,VSize
+       TStep = $1
+       VSize = $2
+       FFT(1, v1, vr, vi)   // forward
+         fstep=1000/TStep/VSize
+         for i=0,vr.size()-1 {
+                denom=1
+                for j=1,numpoles{  // numpoles set in ParameterFile
+                        denom=1+(fstep*i/fZero)*(fstep*i/fZero)
+                        R1=1/denom
+                        I1=fstep*i/fZero/denom
+                        NewR=R1*vr.x[i]-I1*vi.x[i]
+                        NewI=R1*vi.x[i]+I1*vr.x[i]
+                        vr.x[i]=NewR
+                        vi.x[i]=NewI
+                }
+          }
+        FFT(-1, v4, vr, vi)  // inverse
+}
+
+
+proc FFT() {local n, x
+    // transforms Vector $o2;
+    // Results written to $o3 = cos, $o4 = sin components
+
+        if ($1 == 1) { // forward
+                $o3.fft($o2, 1)
+                n = $o3.size()
+                $o3.div(n/2)
+                $o3.x[0] /= 2   // makes the spectrum appear discontinuous
+                $o3.x[1] /= 2   // but the amplitudes are intuitive
+
+                $o4.copy($o3, 0, 1, -1, 1, 2)   // odd elements
+                $o3.copy($o3, 0, 0, -1, 1, 2)   // even elements
+                $o3.resize(n/2+1)
+                $o4.resize(n/2+1)
+                $o3.x[n/2] = $o4.x[0]           //highest cos started in o3.x[1
+                $o4.x[0] = $o4.x[n/2] = 0       // weights for sin(0*i)and sin(PI*i)
+        }else{ // inverse
+                // shuffle o3 and o4 into o2
+                n = $o3.size()
+                $o2.copy($o3, 0, 0, n-2, 2, 1)
+                $o2.x[1] = $o3.x[n-1]
+                $o2.copy($o4, 3, 1, n-2, 2, 1)
+                $o2.x[0] *= 2
+                $o2.x[1] *= 2
+                $o2.fft($o2, -1)
+        }
+}
+
+
+
+
+proc Filter_InitVectors() { local v1S, v1S2, diff
+        // initializes I-Vectors to be filtered
+  v1S =(tstop-t)/dt
+  v1S2=log(v1S)/log(2)
+  v1S2=2^(v1S2-v1S2%1+1)  // making v.size an integral power of 2
+  diff = v1S2-v1S
+  FilterVectorSize=v1S2   // size of data (I)-vector, obeying former criterion
+  FilterVectorCount=diff+1
+  v1 = new Vector(FilterVectorSize)
+  v4 = new Vector(FilterVectorSize)
+  vr = new Vector(FilterVectorSize/2+1)
+  vi = new Vector(FilterVectorSize/2+1)
+
+}
+
+
+
+
+
+// ++++ CLAMP-ROUTINES ++++
+
+
+
+
+proc init() {
+  finitialize(v_init)
+  fcurrent()
+}
+
+
+
+proc run() { local tstepcount
+// while (t<tstop) {    // doesn't work properly
+ for tstepcount=1,((tstop-t)/dt) {
+   if (DebugOn==1) print "debug run1"
+   fadvance()
+   if (DebugOn==1) print "debug run2"
+   if (DebugOn==1) print "time: ",t,"tstop:",tstop,"tstepcount",tstepcount," dt:",dt," voltage:",vC.amp1
+   if (FilterOn) {  // writes currents to vector v1:
+     v1.x[FilterVectorCount]=vC.ic
+     FilterVectorCount+=1
+   }
+   if (DebugOn==1) if (t<tstop) print "yes",t,tstop else print "no"
+ }
+}
+
+
+
+func ClampCurr() {local ret,DTCount
+
+  VProtocol.play(&vC.b.x[4],VProtocolTVector)
+
+  init()
+
+  for VProtCount=0,VProtocolNumSteps-2 {    // pre-pulses
+    tstop=VProtocolTstart[VProtCount+1]
+    dt=DTSteps[VProtCount]  // adapted dts
+    if (DebugOn==1) print "debug ClampCurr 0;VProtCount:",VProtCount,"dt:",dt,"tstop:",tstop
+    run()
+  }
+
+  if (DebugOn==1) print "debug ClampCurr 1"
+  // scaled dts during measurements:
+  tstop=MeasTStart+measTime
+  dt=measTime*DTRes // all set in ParameterFile
+  if (dt<DTmin) dt=DTmin  // cutting tail
+  dt = Round(dt/DTmin)*DTmin  // assuring dt to be a multiple of dtmin
+  if (dtAdapt==0) dt = DTmin
+  
+  if (FilterOn) Filter_InitVectors()
+  run()
+
+  if (FilterOn && dt<1000/2/fZero) { // fZero set in ParameterFile
+    print "filtering"
+    AKfilter(dt,FilterVectorSize)
+    ret = v4.x[FilterVectorSize-1]
+  } else ret=vC.ic
+  return ret
+}
+
+

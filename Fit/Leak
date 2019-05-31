@@ -1,0 +1,82 @@
+// LEAK-file, fit.par is loaded first to get appropriate time & voltage scales
+// this file must be run first (and once per cell) to produce *.iL -leak current file for fit
+
+strdef iClampFileName, loadProg
+objref vC, sh, st
+
+load_file("stdgui.hoc")
+{load_proc("nrnmainmenu") nrnmainmenu()}
+
+
+// VARIABLE CHECK: //
+
+  print " utilized Timesteps: "
+  for TStepCount=0, NumTSteps print TStepCount, ":  " , MeasTimes[TStepCount], "ms"
+
+  print " utilized VoltageSteps: "
+  for VStepCount=0, NumVSteps-1 {
+    print VStepCount, ": " , vclmp[VStepCount]}
+
+
+  print "+++++ Experiment Name: ", ExperimentName, "++++++++"
+  print " "
+  print " Passive Parameters: (homogenous)"
+  print "Rm: ",rm
+  print "Ra: ",ra
+  print "c_m: ",c_m
+  print "Ek: ",Ek
+  print "v_init:  ",v_init
+
+
+// CELL (loaded by fit.par already):
+
+forall {
+  // passive:
+  insert pas
+  Ra = ra
+  cm = c_m
+  g_pas = 1/rm
+  e_pas = Epas
+  // no active
+}
+
+// reducing cell model:
+
+    if (ReduceCell) {
+      xopen("ReduceModel.cell")
+      ReduceModel()
+    }
+
+
+
+
+// VOLTAGE CLAMP PARAMETERS  //
+// all explicitly set by Experiment.par
+
+
+stimSec.sec vC  = new TwoElectrodeIdealVClamp()    // perfect voltage clamp at soma
+//vC.dur1 = MeasTStart + MaxMeasTime*2      // factor 2 is for safety reasons
+                                        // Amplitudes will be vector-played
+
+//vC.rs   = VClampSeriesR
+
+stimSec.sec vC.xmeasure(stimPosV)
+stimSec.sec vC.xinject(stimPosI)
+
+
+
+    xopen("Routines.leak")   // Loading Clamp-Routines
+
+    xopen("InOut.leak")      // Loading Input/Output-Routines
+
+
+// Main Program:
+
+
+CalculateLeak()
+
+WriteLeakCurrents()
+
+
+
+

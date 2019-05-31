@@ -1,0 +1,27 @@
+    print "Input/Output Routines for Kinetics ......."
+
+// Input/Output for Experiment:
+
+proc WriteClampCurrents() { local TStepCount, VStepCount
+
+  sprint(iClampFileName,"Output/%s.kin",ExperimentName)
+  print " Writing True conductances to ", iClampFileName //debug
+  wopen(iClampFileName)  //m WriteOpen /ClampCurrents/ExperimentName.iCl
+
+  fprint(" ExperimentName: _%s_",ExperimentName)
+
+  fprint(" Number of recorded voltage steps:\t\t\t\t%g\n",NumVSteps)
+  fprint("  vclmp \t  iclmp(time) \n \t")
+  for TStepCount=0,NumTSteps fprint("%g\t",MeasTimes[TStepCount])
+  fprint("\n")
+
+  for VStepCount=0,NumVSteps-1 { // writes: V  I(V,t1)  I(V,t2) ...
+    fprint("%g\t",vclmp[VStepCount])
+    for TStepCount=0,NumTSteps {
+      fprint("%g\t",iclmp[VStepCount][TStepCount])
+    }
+  fprint("\n")
+  } //m next v
+  wopen()
+
+}

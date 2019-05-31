@@ -1,0 +1,159 @@
+// following functions are utilized by the correction function in algorithm.fit
+// "global" variables:  ax,bx,cx,IterCount,fa,fb,fc
+
+print "loading numerical routines ....."
+
+// ++++ NUMERICAL ROUTINES ++++
+
+
+// The following function is a litteral implementation of the MNBRAK.C function
+// from Numerical Recipes.  For explanation of the algorithm see the book.
+// The only changes are the addition of the initial check for the significant change
+// in the value of the LSQ.  Also the function SHFT, used in the original does not
+// work in HOC.  Therefore, the shifting operation was implicitly added in the code.
+
+
+func bracket() { local ulim, u, r, q, fu, dum, GOLD, GLIMIT, TINY,VStepCount
+
+    GOLD=1.618034
+    GLIMIT=3.0
+    TINY=1.0e-20
+    VStepCount=$1
+    dum=0
+    fa=LSQ_Calc(VStepCount,ax)
+    fb=LSQ_Calc(VStepCount,bx)
+//  if(abs(fa-fb)<Tolerance/100){
+//      print "1 no significant change to LSQ, G is set to zero"
+//      cx=-999
+//      return cx
+//  }
+    if (fb>fa){  // invert fa,fb; ax,bx
+        dum=ax
+        ax=bx
+        bx=dum
+        dum=fa
+        fa=fb
+        fb=dum
+    }
+    cx=bx+GOLD*(bx-ax)
+    fc=LSQ_Calc(VStepCount,cx)
+//  if(abs(fb-fc)<Tolerance/100){
+//      print "2 no significant change to LSQ, G is set to zero"
+//      cx=-999
+//      return cx
+//  }
+    while (fb>fc){
+        r=(bx-ax)*(fb-fc)
+        q=(bx-cx)*(fb-fa)
+        dumm=q-r
+        if (abs(dumm)<TINY) { print abs(q-r)/(q-r) dumm=TINY*abs(q-r)/(q-r)}
+        u=bx-((bx-cx)*q-(bx-ax)*r)/(2*dumm)
+        ulim=bx+GLIMIT*(cx-bx)
+        if ((bx-u)*(u-cx) > 0.0) {
+            fu=LSQ_Calc(VStepCount,u)
+            IterCount+=1
+            if (fu < fc) {
+                ax=bx
+                bx=u
+                fa=fb
+                fb=fu
+                return cx
+            } else if (fu > fb) {
+                cx=u
+                fc=fu
+                return cx
+            }
+            u=cx+GOLD*(cx-bx)
+            fu=LSQ_Calc(VStepCount,u)
+            IterCount+=1
+        } else if ((cx-u)*(u-ulim) > 0.0) {
+            fu=LSQ_Calc(VStepCount,u)
+            IterCount+=1
+            if (fu < fc) {
+
+                bx=cx
+                cx=u
+                u=cx+GOLD*(cx-bx)
+                fb=fc
+                fc=fu
+                fu=LSQ_Calc(VStepCount,u)
+                IterCount+=1
+            }
+        } else if ((u-ulim)*(ulim-cx) >= 0.0) {
+            u=ulim
+            fu=LSQ_Calc(VStepCount,u)
+            IterCount+=1
+        } else {
+            u=cx+GOLD*(cx-bx)
+            fu=LSQ_Calc(VStepCount,u)
+            IterCount+=1
+        }
+
+        ax=bx
+        bx=cx
+        cx=u
+        fa=fb
+        fb=fc
+        fc=fu
+    }
+    return cx
+}
+
+
+// The following function is a literal implementation of the GOLDEN.C function
+// from Numerical Reciepes.  The changes are the implicit implementation of
+// SHFT2 and SHFT3 into the code and the use of the LSQ_Calc function.  I also
+// added the fprint "." lines to enable following the number of iterations.
+
+func golden() { local VStepCount, Ratio, C1, f1,f2,x0,x1,x2,x3,dum
+
+    VStepCount=$1
+    Ratio=0.61803399
+    C1=1-Ratio
+
+
+    x0=ax
+    x3=cx
+    if (abs(cx-bx) > abs(bx-ax)) {
+        x1=bx
+        x2=bx+C1*(cx-bx)
+    } else {
+        x2=bx
+        x1=bx-C1*(bx-ax)
+    }
+    f1=LSQ_Calc(VStepCount,x1)
+    f2=LSQ_Calc(VStepCount,x2)
+    IterCount+=2
+    while (abs(x3-x0) > Tolerance*(abs(x1)+abs(x2))) {
+        if (f2 < f1) {
+
+            x0=x1
+            x1=x2
+            x2=Ratio*x1+C1*x3
+            f1=f2
+            f2=LSQ_Calc(VStepCount,x2)
+		if(PrintVerbose==1) printf(".")
+		doEvents()
+            IterCount+=1
+            if (IterCount>numRun) {ax=x2 return x2}
+        } else {
+            x3=x2
+            x2=x1
+            x1=Ratio*x2+C1*x0
+            f2=f1
+            f1=LSQ_Calc(VStepCount,x1)
+		if(PrintVerbose==1) printf(".")
+		doEvents()
+            IterCount+=1
+            if (IterCount>numRun) {ax=x1 return x1}
+        }
+    }
+    if (f1 < f2) {
+        ax=x1
+        return x1
+    } else {
+        ax=x2
+        return x2
+    }
+
+}

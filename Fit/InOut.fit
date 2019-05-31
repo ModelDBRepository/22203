@@ -1,0 +1,100 @@
+// Input/Output- Routines used by fit.hoc
+
+proc ReadIC_and_leak() {local COUNT, i, File_NumVSteps, TStepCount,File_measTime, VStepCount
+     // $s1 = ExperimentName
+     // $s2 = LeakName (more general)
+
+  sprint(loadProg,"ClampCurrents/%s.iCl",$s1)
+  print " Loading ClampCurrents from " , loadProg  // debug
+  ropen(loadProg)
+  File_NumVSteps=fscan()
+  if (File_NumVSteps!=NumVSteps) {
+    print "Total Number of Voltage Steps - Mismatch File<>Experiment (.iCl)"
+    print "File_NumVSteps: ",File_NumVSteps, "NumVSteps: ", NumVSteps
+  }  // debug
+
+  for TStepCount=0,NumTSteps {
+    File_measTime=fscan()
+    if (File_measTime!=MeasTimes[TStepCount]) {
+      print "MeasTime - Mismatch File<>Experiment (.iCl)"
+      print "TStepCount: ",TStepCount, "File_measTime: ",File_measTime, "MeasTimes[TStepCount]: ",MeasTimes[TStepCount]
+    }  // debug: comparing given experimental MeasTimes-Arr with meastimes in file
+  }
+
+  for VStepCount=0,NumVSteps-1 {
+    File_vclmp = fscan()
+    if (DebugOn) print "reading voltage: ",File_vclmp,"(VStepCount:",VStepCount,")"
+    if (File_vclmp!=vclmp[VStepCount]) {
+      print "VClmp  - Mismatch (.iCl) "
+      print "VStepCount:", VStepCount, "File_vclmp: ",File_vclmp,"vclmp[VStepCount]:", vclmp[VStepCount]
+    }
+    for TStepCount=0,NumTSteps {
+     iclmp[VStepCount][TStepCount]=fscan()
+    }
+  }
+  ropen()
+
+//+++++++++++++++++++++++++++++++  LEAK  LEAK   LEAK  +++++++++++++++++
+
+  sprint(loadProg,"SimLeak/%s.iL",$s2)
+  print " Loading Simulated LeakCurrents from " , loadProg  // debug
+  ropen(loadProg)
+  File_NumVSteps=fscan()
+  if (File_NumVSteps!=NumVSteps) {
+    print "Total Number of Voltage Steps - Mismatch File<>Experiment (.iL)"
+    print "File_NumVSteps: ",File_NumVSteps, "NumVSteps: ", NumVSteps
+  }  // debug
+
+  for TStepCount=0,NumTSteps {
+    File_measTime=fscan()
+    if (File_measTime!=MeasTimes[TStepCount]) {
+      print "MeasTime - Mismatch File<>Experiment (.iL)"
+      print "TStepCount: ",TStepCount, "File_measTime: ",File_measTime, "MeasTimes[TStepCount]: ",MeasTimes[TStepCount]
+    }  // debug: comparing given experimental MeasTimes-Arr with meastimes in file
+  }
+
+  for VStepCount=0,NumVSteps-1 {
+    File_vclmp = fscan()
+    if (File_vclmp!=vclmp[VStepCount]) {
+      print "VClmp  - Mismatch (.iL)"
+      print "VStepCount:", VStepCount, "File_vclmp: ",File_vclmp,"vclmp[VStepCount]:", vclmp[VStepCount]
+    }
+    for TStepCount=0,NumTSteps {
+     leak[VStepCount][TStepCount]=fscan()
+    }
+  }
+  ropen()
+
+}
+
+
+proc Write() {local FitTStepCount, FitTPoint, VStepCount
+         // $s1 = Output-Filename
+
+    print "Writing Conductances to ", $s1
+    wopen($s1)
+    // fprint("V/mV\t")
+
+    fprint("\t")
+    for VStepCount=0,int(gDKVRange/OutputVScale) { //writing voltage-scale
+      fprint("%g\t",OutputVScale*VStepCount-gDKVPointerConverter)  // taking original array-pointer-conversion into account
+    }
+    fprint("\n")
+
+    for FitTStepCount=0,NumFitTPoints {
+      FitTPoint =FitTPoints[FitTStepCount]
+      fprint("%g\t",MeasTimes[FitTPoint])
+      for VStepCount=0,int(gDKVRange/OutputVScale) {
+        fprint("%g\t",gbar[OutputVScale*VStepCount][gbarTRes*MeasTimes[FitTPoint]])
+      }
+      fprint("\n")
+    }
+
+    wopen()
+}
+
+
+
+
+
+

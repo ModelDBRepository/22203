@@ -1,0 +1,33 @@
+// routines for reducing cell model
+
+
+proc SetOrigin() {
+  stimSec.sec distance(0,stimPosI)
+}
+
+func min() {
+  if ($1<$2) return $1 else return $2
+}
+
+proc ReduceModel() { local totalnseg
+  print "reducing model ......."
+
+  totalnseg=0
+  forall totalnseg+=nseg
+  print "number of segments = ", totalnseg
+  //forall nseg=L/10+2
+  SetOrigin()
+  forall if (min(distance(0.5), distance(1))>400) { nseg=L/400+1 SetOrigin() }
+  forall if (min(distance(0.5), distance(1))>300 && min(distance(0.5), distance(1)) <=400) { nseg=L/300+1 SetOrigin() }
+  forall if (min(distance(0.5), distance(1))>100 && min(distance(0.5), distance(1)) <=300) { nseg=L/100+1 SetOrigin()  }
+  forall if (min(distance(0.5), distance(1))>50 && min(distance(0.5), distance(1)) <=100) { nseg=L/20+1 SetOrigin()  }
+  //forall if (min(distance(0.5), distance(1))>0 && min(distance(0.5), distance(1)) <=50) { nseg=L/10+1 SetOrigin()  }
+  //stimSec.sec nseg=L/10+1
+  SetOrigin()
+  totalnseg=0
+  forall totalnseg+=nseg
+  print "number of segments in reduced model = ", totalnseg
+}
+
+
+

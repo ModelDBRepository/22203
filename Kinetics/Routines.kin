@@ -1,0 +1,69 @@
+    print "loading clamp routines for experiment ....."
+
+// CLAMP-ROUTINES for EXPERIMENT
+
+proc init() {
+  finitialize(v_init)
+  fcurrent()
+}
+
+
+proc run() { local tstepcount
+//  while (t<tstop) {       // doesn't work properly for unknown reason
+  for tstepcount=1,((tstop-t)/dt) {
+    if (DebugOn==2) print "time: ",t," dt:",dt," voltage:",vC.amp1
+    if (DebugOn==2) {
+      forall print "time: ",t," dt:",dt,"voltage:",vC.amp1, " gkfast:", gkfast_kfast," gbar:", gbar_kfast
+    }
+    if (DebugOn==2) print "debug run1"
+    fadvance()
+    if (DebugOn==2) print "debug run2"
+    if (DebugOn==2) print "time: ",t,"tstop:",tstop,"tstepcount:",tstepcount," dt:",dt," voltage:",vC.amp1
+    if (DebugOn==2) if (t<tstop) print "yes",t,tstop else print "no"
+  }
+}
+
+
+proc MeasureCurrents() {local VStepCount, TStepCount, VProtCount
+  print "+++++++++++++++++ doing the experiment +++++++++++++"
+
+  for VStepCount=0,NumVSteps-1 {
+    VProtocol.x[VProtocolNumSteps-1]  =vclmp[VStepCount]
+    print "Voltage: ",VProtocol.x[VProtocolNumSteps-1]
+    VProtocol.play(&vC.amp1,VProtocolTVector)
+
+    init()
+
+    for VProtCount=0,VProtocolNumSteps-2 {    // pre-pulses
+      tstop=VProtocolTstart[VProtCount+1]
+      dt=DTSteps[VProtCount]  // adapted dts
+      run()
+      if (DebugOn==2) forall print "time:",tstop,"volt:",v,"vC.i:",vC.i,"gkfast:",gkfast_kfast,"gbar:",gbar_kfast
+      if (DebugOn==3) forall print "time:",t,"volt:",v,"c1*b+c2*b1:",(c1_kslow*b_kslow+c2_kslow*b1_kslow),"gkslow:",gkslow_kslow,"gbar:",gbar_kslow
+      if (DebugOn==3) forall print  "a^2:",a_kslow^2,"tadj:",tadj_kslow
+      if (DebugOn==4) forall print "time:",tstop,"volt:",v,"vC.i:",vC.i,"gkfast:",gkfast_kfast
+      if (DebugOn==5) forall print "time:",tstop,"volt:",v,"vC.i:",vC.i,"gkm:",gk_km,"gbar:",gbar_km
+  
+
+   }
+    if (DebugOn==3) forall print "time:",t,"volt:",v,"c1*b+c2*b1:",(c1_kslow*b_kslow+c2_kslow*b1_kslow),"gkslow:",gkslow_kslow,"gbar:",gbar_kslow
+    if (DebugOn==3) forall print  "a^2:",a_kslow^2,"tadj:",tadj_kslow
+    TStepCount=0
+    iclmp[VStepCount][TStepCount] =gkslow_kslow+gkfast_kfast+gk_kv+gk_km+gkabar_kap 
+    if (DebugOn==2) forall print "time:",MeasTimes[TStepCount],"volt:",v,"vC.i:",vC.i,"gkfast:",gkfast_kfast,"gbar:",gbar_kfast
+                            //starting Measurements:
+    if (DebugOn==4) forall print "time:",tstop,"volt:",v,"vC.i:",vC.i,"gkfast:",gkfast_kfast
+    dt = DTSteps[VProtocolNumSteps-1]
+    for TStepCount=1,NumTSteps {
+      tstop=MeasTStart+MeasTimes[TStepCount]
+      run()
+      iclmp[VStepCount][TStepCount] =gkslow_kslow+gkfast_kfast+gk_kv+gk_km+gkabar_kap 
+      if (DebugOn==2) forall print "time:",MeasTimes[TStepCount],"volt:",v,"vC.i:",vC.i,"gkfast:",gkfast_kfast,"gbar:",gbar_kfast
+      if (DebugOn==4) forall print "time:",tstop,"volt:",v,"vC.i:",vC.i,"gkfast:",gkfast_kfast
+      if (DebugOn==5) forall print "time:",tstop,"volt:",v,"vC.i:",vC.i,"gkm:",gk_km,"gbar:",gbar_km
+ 
+    }// time
+  }// voltage
+}// proc MeasureCurrents
+
+
